@@ -1,6 +1,7 @@
 package org.example.bookingplatform.Dtos;
 
 import lombok.Data;
+import org.example.bookingplatform.Entity.Booking;
 
 import java.time.LocalDateTime;
 
@@ -12,3 +13,4 @@ public class BookingRequestDTO {
 
     // Constructors, Getters, and Setters
 }
+

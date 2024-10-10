@@ -39,8 +39,8 @@ public class securityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                 .authorizeHttpRequests(
-                        auth -> auth.requestMatchers("/login", "/register", "/api/public/**", "/error", "/api/theaters/**", "/api/bookings/**").permitAll()  // Permit public access
-                                .requestMatchers("/api/**").authenticated()  // Secure API endpoints
+                        auth -> auth.requestMatchers("/login", "/register", "/api/public/**", "/error", "/api/theaters/**", "/api/bookings/**","/api-docs").permitAll()  // Permit public access
+                                //.requestMatchers("/api/**").authenticated()  // Secure API endpoints
                                 .anyRequest().authenticated()  // Secure everything else
                 ).oauth2Login(oauth2 -> oauth2
                         //.loginPage("/login")

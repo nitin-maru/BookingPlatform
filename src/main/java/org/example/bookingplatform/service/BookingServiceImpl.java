@@ -2,30 +2,54 @@ package org.example.bookingplatform.service;
 
 import org.example.bookingplatform.Dtos.BookingRequestDTO;
 import org.example.bookingplatform.Dtos.BookingResponseDTO;
+import org.example.bookingplatform.Dtos.BookingServiceResponse;
 import org.example.bookingplatform.Entity.Booking;
 import org.example.bookingplatform.repository.BookingRepository;
+import org.example.bookingplatform.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class BookingServiceImpl implements IBookingService {
+public class BookingServiceImpl implements BookingService {
     @Autowired
     private BookingRepository bookingRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Override
-    public List<Booking> getAllBookings() {
-        return bookingRepository.findAll();
+    public List<BookingServiceResponse> getAllBookings() {
+        List<Booking> bookings = bookingRepository.findAll();
+        return bookings.stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
+
+    // Helper method to convert Booking entity to BookingResponse DTO
+    private BookingServiceResponse convertToResponse(Booking booking) {
+        return new BookingServiceResponse(
+                booking.getId(),
+                booking.getShowTime().format(DateTimeFormatter.ofPattern("HH-MM-YYYY HH:MM:SS")),
+                booking.getCustomer().getId(),
+                booking.getCustomer().getName(),
+                booking.getCustomer().getEmail()
+        );
     }
 
     @Override
-    public Optional<Booking> getBookingById(Long id) {
-        return bookingRepository.findById(id);
+    public BookingServiceResponse getBookingById(Long id) {
+        Booking booking = bookingRepository.findById(id).orElse(null);
+        if(booking != null) {
+            return this.convertToResponse(booking);
+        }
+        return null;
     }
 
     @Override

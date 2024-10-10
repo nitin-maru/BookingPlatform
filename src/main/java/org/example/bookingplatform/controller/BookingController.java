@@ -2,9 +2,11 @@ package org.example.bookingplatform.controller;
 
 import org.example.bookingplatform.Dtos.BookingRequestDTO;
 import org.example.bookingplatform.Dtos.BookingResponseDTO;
+import org.example.bookingplatform.Dtos.BookingServiceResponse;
 import org.example.bookingplatform.Entity.Booking;
-import org.example.bookingplatform.service.BookingServiceImpl;
+import org.example.bookingplatform.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,19 +17,19 @@ import java.util.List;
 public class BookingController {
 
     @Autowired
-    private BookingServiceImpl bookingService;
+    private BookingService bookingService;
 
 
     @GetMapping
-    public List<Booking> getAllBookings() {
-        return bookingService.getAllBookings();
+    public ResponseEntity<List<BookingServiceResponse>> getAllBookings() {
+        List<BookingServiceResponse> response =  bookingService.getAllBookings();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@PathVariable Long id) {
-        return bookingService.getBookingById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public BookingServiceResponse getBookingById(@PathVariable Long id) {
+        return bookingService.getBookingById(id);
+
     }
 
     @PostMapping
